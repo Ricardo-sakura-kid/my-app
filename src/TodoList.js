@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TodoItem from './TodoItem'
 
 class TodoList extends Component {
 
@@ -8,6 +9,11 @@ class TodoList extends Component {
       list: [],
         inputValue:''
     }
+
+      this.handleInputChang = this.handleInputChang.bind(this);
+      this.handleBtnClick = this.handleBtnClick.bind(this);
+      this.onClickDelete = this.onClickDelete.bind(this);
+
   }
 
   handleBtnClick(){
@@ -24,18 +30,34 @@ class TodoList extends Component {
     })
    //console.log(e.target.value)
   }
+    onClickDelete(index){
+        // 4、获得index的父组件就可以对数据进行操作了
+        const list = [...this.state.list];
+        list.splice(index,1);
+        this.setState({
+            list:list
+        })
+    }
+    getTodoItems(){
+      return(
+          this.state.list.map((item,index) => {
+          // 3、然后delete方法绑定了onClickDelete方法，onClickDelete就获得的子组件item的index（下标）值
+          return <TodoItem delete={this.onClickDelete} content={item} key={index} index={index}/>
+      })
+      )
+    }
+  // 父组件通过属性的形式向子组件传递参数
+    //  子组件通过props接受父组件传递过来的参数
   render() {
     return (
       <div>
         <div>
-          <input value={this.state.inputValue} onChange={this.handleInputChang.bind(this)}/>
-          <button onClick={this.handleBtnClick.bind(this)}>add</button>
+          <input value={this.state.inputValue} onChange={this.handleInputChang}/>
+          <button onClick={this.handleBtnClick}>add</button>
         </div>
         <ul>
             {
-              this.state.list.map((item,index) => {
-                return <li key={index}>{item}</li>
-              })
+                this.getTodoItems()
             }
         </ul>
       </div>
